@@ -1,0 +1,14 @@
+AclHelperBundle\Entity\SecurityIdentity:
+    table: "acl_security_identities"
+    type: entity
+    read_only: true
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        identifier:
+            type: string
+            length: 200
+        username:
+            type: integer

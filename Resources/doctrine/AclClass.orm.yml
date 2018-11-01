@@ -1,0 +1,12 @@
+AclHelperBundle\Entity\AclClass:
+    table: "acl_classes"
+    type: entity
+    read-only: true
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        class_type:
+            type: string
+            length: 200

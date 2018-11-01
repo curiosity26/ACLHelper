@@ -1,0 +1,23 @@
+{
+    "name": "curiosity26/acl-helper-bundle",
+    "description": "Allows direct querying for entities with ACLs implied",
+    "type": "symfony-bundle",
+    "require": {
+        "symfony/acl-bundle": "^1.0",
+        "doctrine/doctrine-bundle": "^1.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4",
+        "symfony/phpunit-bridge": "^4.1",
+        "theofidry/alice-data-fixtures": "^1.1",
+        "doctrine/data-fixtures": "^1.3",
+        "ext-pdo_sqlite": "^7.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Boyce",
+            "email": "curiosity26@gmail.com"
+        }
+    ]
+}

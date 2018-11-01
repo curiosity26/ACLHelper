@@ -1,0 +1,22 @@
+AclHelperBundle\Entity\ObjectIdentity:
+    table: "acl_object_identities"
+    type: entity
+    read-only: true
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        parent_object_identity_id:
+            type: integer
+            options:
+                unsigned: true
+        class_id:
+            type: integer
+            options:
+                unsigned: true
+        object_identifier:
+            type: string
+            length: 100
+        entries_inheriting:
+            type: boolean

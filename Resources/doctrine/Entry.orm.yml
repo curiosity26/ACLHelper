@@ -1,0 +1,39 @@
+AclHelperBundle\Entity\Entry:
+    table: "acl_entries"
+    type: entity
+    read-only: true
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        class_id:
+            type: integer
+            options:
+                unsigned: true
+        object_identity_id:
+            type: integer
+            options:
+                unsigned: true
+        security_identity_id:
+            type: integer
+            options:
+                unsigned: true
+        field_name:
+            type: string
+            length: 50
+        ace_order:
+            type: smallint
+            options:
+                unsigned: true
+        mask:
+            type: integer
+        granting:
+            type: boolean
+        granting_strategy:
+            type: string
+            length: 30
+        audit_success:
+            type: boolean
+        audit_failure:
+            type: boolean
