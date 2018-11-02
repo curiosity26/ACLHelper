@@ -1,0 +1,19 @@
+security:
+    providers:
+        test:
+            memory:
+                users:
+                    view: { password: 'view_user1', roles: ['ROLE_USER'] }
+                    edit: { password: 'edit_user1', roles: ['ROLE_USER'] }
+                    delete: { password: 'delete_user1', roles: ['ROLE_USER'] }
+                    admin: { password: 'admin_user1', roles: ['ROLE_ADMIN'] }
+                    moderator: { password: 'moderator_user1', roles: ['ROLE_MODERATOR'] }
+                    owner1: { password: 'owner_user1', roles: ['ROLE_USER'] }
+                    owner2: { password: 'owner_user2', roles: ['ROLE_USER'] }
+
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
+    firewalls:
+            main:
+                anonymous: ~

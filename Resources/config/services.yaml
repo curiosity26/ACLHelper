@@ -1,0 +1,9 @@
+services:
+    Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder:
+        $registry: '@Symfony\Bridge\Doctrine\RegistryInterface'
+        $roleHierarchy: '@Symfony\Component\Security\Core\Role\RoleHierarchyInterface'
+    Curiosity26\AclHelperBundle\Helper\AclHelper:
+        arguments:
+            $registry: '@Symfony\Bridge\Doctrine\RegistryInterface'
+            $queryBuilder: '@Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder'
+        public: true

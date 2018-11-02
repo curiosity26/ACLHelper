@@ -1,4 +1,4 @@
-AclHelperBundle\Entity\ObjectIdentity:
+Curiosity26\AclHelperBundle\Entity\ObjectIdentity:
     table: "acl_object_identities"
     type: entity
     read-only: true
@@ -7,16 +7,20 @@ AclHelperBundle\Entity\ObjectIdentity:
             type: integer
             generator: { strategy: AUTO }
     fields:
-        parent_object_identity_id:
+        parentObjectIdentityId:
+            name: parent_object_identity_id
             type: integer
             options:
                 unsigned: true
-        class_id:
+        classId:
+            name: class_id
             type: integer
             options:
                 unsigned: true
-        object_identifier:
+        objectIdentifier:
+            name: object_identifier
             type: string
             length: 100
-        entries_inheriting:
+        entriesInheriting:
+            name: entries_inheriting
             type: boolean

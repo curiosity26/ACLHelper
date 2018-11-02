@@ -1,0 +1,41 @@
+framework:
+    test: ~
+    secret: test
+    session:
+        storage_id: session.storage.mock_file
+    csrf_protection: false
+    validation: false
+    router:
+        http_port: 80
+        resource: ''
+
+doctrine:
+    dbal:
+        connections:
+            default:
+                driver: pdo_sqlite
+                url: 'sqlite:///test_db.sqlite'
+                charset: UTF8
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        entity_managers:
+            default:
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                connection: default
+                mappings:
+                    default:
+                        type: annotation
+                        is_bundle: false
+                        prefix: 'Curiosity26\AclHelperBundle\Tests\Entity'
+                        dir: "Entity"
+                    Curiosity26AclHelperBundle:
+                        type: yml
+                        dir: "Resources/config/doctrine"
+                        prefix: 'Curiosity26\AclHelperBundle\Entity'
+                        is_bundle: true
+
+fidry_alice_data_fixtures:
+    default_purge_mode: truncate
+    db_drivers:
+        doctrine_orm: true

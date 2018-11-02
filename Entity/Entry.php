@@ -6,22 +6,21 @@
  * Time: 11:09 AM
  */
 
-namespace AclHelperBundle\Entity;
-
+namespace Curiosity26\AclHelperBundle\Entity;
 
 class Entry
 {
     private $id;
-    private $class_id;
-    private $object_identity_id;
-    private $security_identity_id;
-    private $field_name;
-    private $ace_order;
+    private $classId;
+    private $objectIdentityId;
+    private $securityIdentityId;
+    private $fieldName;
+    private $aceOrder;
     private $mask;
     private $granting;
-    private $granting_strategy;
-    private $audit_success;
-    private $audit_failure;
+    private $grantingStrategy;
+    private $auditSuccess;
+    private $auditFailure;
 
     /**
      * @return mixed
@@ -44,15 +43,15 @@ class Entry
      */
     public function getClassId()
     {
-        return $this->class_id;
+        return $this->classId;
     }
 
     /**
-     * @param mixed $class_id
+     * @param mixed $classId
      */
-    public function setClassId($class_id)
+    public function setClassId($classId)
     {
-        $this->class_id = $class_id;
+        $this->classId = $classId;
     }
 
     /**
@@ -60,15 +59,15 @@ class Entry
      */
     public function getObjectIdentityId()
     {
-        return $this->object_identity_id;
+        return $this->objectIdentityId;
     }
 
     /**
      * @param mixed $object_entity_id
      */
-    public function setObjectIdentityId($object_identity_id)
+    public function setObjectIdentityId($objectIdentityId)
     {
-        $this->object_identity_id = $object_identity_id;
+        $this->objectIdentityId = $objectIdentityId;
     }
 
     /**
@@ -76,15 +75,15 @@ class Entry
      */
     public function getSecurityIdentityId()
     {
-        return $this->security_identity_id;
+        return $this->securityIdentityId;
     }
 
     /**
-     * @param mixed $security_identity_id
+     * @param mixed $securityIdentityId
      */
-    public function setSecurityIdentityId($security_identity_id)
+    public function setSecurityIdentityId($securityIdentityId)
     {
-        $this->security_identity_id = $security_identity_id;
+        $this->securityIdentityId = $securityIdentityId;
     }
 
     /**
@@ -92,15 +91,15 @@ class Entry
      */
     public function getFieldName()
     {
-        return $this->field_name;
+        return $this->fieldName;
     }
 
     /**
-     * @param mixed $field_name
+     * @param mixed $fieldName
      */
-    public function setFieldName($field_name)
+    public function setFieldName($fieldName)
     {
-        $this->field_name = $field_name;
+        $this->fieldName = $fieldName;
     }
 
     /**
@@ -108,15 +107,15 @@ class Entry
      */
     public function getAceOrder()
     {
-        return $this->ace_order;
+        return $this->aceOrder;
     }
 
     /**
-     * @param mixed $ace_order
+     * @param mixed $aceOrder
      */
-    public function setAceOrder($ace_order)
+    public function setAceOrder($aceOrder)
     {
-        $this->ace_order = $ace_order;
+        $this->aceOrder = $aceOrder;
     }
 
     /**
@@ -156,15 +155,15 @@ class Entry
      */
     public function getGrantingStrategy()
     {
-        return $this->granting_strategy;
+        return $this->grantingStrategy;
     }
 
     /**
-     * @param mixed $granting_strategy
+     * @param mixed $grantingStrategy
      */
-    public function setGrantingStrategy($granting_strategy)
+    public function setGrantingStrategy($grantingStrategy)
     {
-        $this->granting_strategy = $granting_strategy;
+        $this->grantingStrategy = $grantingStrategy;
     }
 
     /**
@@ -172,15 +171,15 @@ class Entry
      */
     public function getAuditSuccess()
     {
-        return $this->audit_success;
+        return $this->auditSuccess;
     }
 
     /**
-     * @param mixed $audit_success
+     * @param mixed $auditSuccess
      */
-    public function setAuditSuccess($audit_success)
+    public function setAuditSuccess($auditSuccess)
     {
-        $this->audit_success = $audit_success;
+        $this->auditSuccess = $auditSuccess;
     }
 
     /**
@@ -188,14 +187,14 @@ class Entry
      */
     public function getAuditFailure()
     {
-        return $this->audit_failure;
+        return $this->auditFailure;
     }
 
     /**
-     * @param mixed $audit_failure
+     * @param mixed $auditFailure
      */
-    public function setAuditFailure($audit_failure)
+    public function setAuditFailure($auditFailure)
     {
-        $this->audit_failure = $audit_failure;
+        $this->auditFailure = $auditFailure;
     }
 }

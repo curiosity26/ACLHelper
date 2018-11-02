@@ -1,4 +1,4 @@
-AclHelperBundle\Entity\Entry:
+Curiosity26\AclHelperBundle\Entity\Entry:
     table: "acl_entries"
     type: entity
     read-only: true
@@ -7,22 +7,27 @@ AclHelperBundle\Entity\Entry:
             type: integer
             generator: { strategy: AUTO }
     fields:
-        class_id:
+        classId:
+            name: class_id
             type: integer
             options:
                 unsigned: true
-        object_identity_id:
+        objectIdentityId:
+            name: object_identity_id
             type: integer
             options:
                 unsigned: true
-        security_identity_id:
+        securityIdentityId:
+            name: security_identity_id
             type: integer
             options:
                 unsigned: true
-        field_name:
+        fieldName:
+            name: field_name
             type: string
             length: 50
-        ace_order:
+        aceOrder:
+            name: ace_order
             type: smallint
             options:
                 unsigned: true
@@ -30,10 +35,13 @@ AclHelperBundle\Entity\Entry:
             type: integer
         granting:
             type: boolean
-        granting_strategy:
+        grantingStrategy:
+            name: granting_strategy
             type: string
             length: 30
-        audit_success:
+        auditSuccess:
+            name: audit_success
             type: boolean
-        audit_failure:
+        auditFailure:
+            name: audit_failure
             type: boolean

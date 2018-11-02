@@ -6,8 +6,7 @@
  * Time: 10:53 AM
  */
 
-namespace AclHelperBundle\Entity;
-
+namespace Curiosity26\AclHelperBundle\Entity;
 
 class SecurityIdentity
 {

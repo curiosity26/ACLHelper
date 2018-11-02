@@ -6,16 +6,15 @@
  * Time: 11:02 AM
  */
 
-namespace AclHelperBundle\Entity;
-
+namespace Curiosity26\AclHelperBundle\Entity;
 
 class ObjectIdentity
 {
     private $id;
-    private $parent_object_identity_id;
-    private $class_id;
-    private $object_identifier;
-    private $entries_inheriting;
+    private $parentObjectIdentityId;
+    private $classId;
+    private $objectIdentifier;
+    private $entriesInheriting;
 
     /**
      * @return mixed
@@ -38,15 +37,15 @@ class ObjectIdentity
      */
     public function getParentObjectIdentityId()
     {
-        return $this->parent_object_identity_id;
+        return $this->parentObjectIdentityId;
     }
 
     /**
-     * @param mixed $parent_object_identity_id
+     * @param mixed $parentObjectIdentityId
      */
-    public function setParentObjectIdentityId($parent_object_identity_id)
+    public function setParentObjectIdentityId($parentObjectIdentityId)
     {
-        $this->parent_object_identity_id = $parent_object_identity_id;
+        $this->parentObjectIdentityId = $parentObjectIdentityId;
     }
 
     /**
@@ -54,15 +53,15 @@ class ObjectIdentity
      */
     public function getClassId()
     {
-        return $this->class_id;
+        return $this->classId;
     }
 
     /**
-     * @param mixed $class_id
+     * @param mixed $classId
      */
-    public function setClassId($class_id)
+    public function setClassId($classId)
     {
-        $this->class_id = $class_id;
+        $this->classId = $classId;
     }
 
     /**
@@ -70,15 +69,15 @@ class ObjectIdentity
      */
     public function getObjectIdentifier()
     {
-        return $this->object_identifier;
+        return $this->objectIdentifier;
     }
 
     /**
-     * @param mixed $object_identifier
+     * @param mixed $objectIdentifier
      */
-    public function setObjectIdentifier($object_identifier)
+    public function setObjectIdentifier($objectIdentifier)
     {
-        $this->object_identifier = $object_identifier;
+        $this->objectIdentifier = $objectIdentifier;
     }
 
     /**
@@ -86,14 +85,14 @@ class ObjectIdentity
      */
     public function getEntriesInheriting()
     {
-        return $this->entries_inheriting;
+        return $this->entriesInheriting;
     }
 
     /**
-     * @param mixed $entries_inheriting
+     * @param mixed $entriesInheriting
      */
-    public function setEntriesInheriting($entries_inheriting)
+    public function setEntriesInheriting($entriesInheriting)
     {
-        $this->entries_inheriting = $entries_inheriting;
+        $this->entriesInheriting = $entriesInheriting;
     }
 }

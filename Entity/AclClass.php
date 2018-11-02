@@ -6,13 +6,12 @@
  * Time: 11:17 AM
  */
 
-namespace AclHelperBundle\Entity;
-
+namespace Curiosity26\AclHelperBundle\Entity;
 
 class AclClass
 {
     private $id;
-    private $class_type;
+    private $classType;
 
     /**
      * @return mixed
@@ -35,14 +34,14 @@ class AclClass
      */
     public function getClassType()
     {
-        return $this->class_type;
+        return $this->classType;
     }
 
     /**
-     * @param mixed $class_type
+     * @param mixed $classType
      */
-    public function setClassType($class_type)
+    public function setClassType($classType)
     {
-        $this->class_type = $class_type;
+        $this->classType = $classType;
     }
 }

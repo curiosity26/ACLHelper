@@ -1,4 +1,4 @@
-AclHelperBundle\Entity\AclClass:
+Curiosity26\AclHelperBundle\Entity\AclClass:
     table: "acl_classes"
     type: entity
     read-only: true
@@ -7,6 +7,7 @@ AclHelperBundle\Entity\AclClass:
             type: integer
             generator: { strategy: AUTO }
     fields:
-        class_type:
+        classType:
+            name: class_type
             type: string
             length: 200
