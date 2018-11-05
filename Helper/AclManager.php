@@ -8,10 +8,12 @@
 
 namespace Curiosity26\AclHelperBundle\Helper;
 
+use Symfony\Component\Security\Acl\Domain\Entry;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
+use Symfony\Component\Security\Acl\Model\ObjectIdentityInterface;
 use Symfony\Component\Security\Acl\Model\SecurityIdentityInterface;
 
 /**
@@ -48,7 +50,7 @@ class AclManager
      */
     public function aclFor($object)
     {
-        if (!$object instanceof ObjectIdentity) {
+        if (!$object instanceof ObjectIdentityInterface) {
             $object = ObjectIdentity::fromDomainObject($object);
         }
 
@@ -334,6 +336,70 @@ class AclManager
     }
 
     /**
+     * @return array|Entry[]
+     */
+    public function getClassAces(): array
+    {
+        if (null === $this->acl) {
+            throw new \RuntimeException("Find or create an ACL using aclFor() first.");
+        }
+
+        return $this->acl->getClassAces();
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return array|Entry[]
+     */
+    public function getClassFieldAces(\string $field): array
+    {
+        if (null === $this->acl) {
+            throw new \RuntimeException("Find or create an ACL using aclFor() first.");
+        }
+
+        return $this->acl->getClassFieldAces($field);
+    }
+
+    /**
+     * @return array|Entry[]
+     */
+    public function getObjectAces(): array
+    {
+        if (null === $this->acl) {
+            throw new \RuntimeException("Find or create an ACL using aclFor() first.");
+        }
+
+        return $this->acl->getObjectAces();
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return array|Entry[]
+     */
+    public function getObjectFieldAces(\string $field): array
+    {
+        if (null === $this->acl) {
+            throw new \RuntimeException("Find or create an ACL using aclFor() first.");
+        }
+
+        return $this->acl->getObjectFieldAces($field);
+    }
+
+    /**
+     * @return ObjectIdentityInterface
+     */
+    public function getObjectIdentity(): ObjectIdentityInterface
+    {
+        if (null === $this->acl) {
+            throw new \RuntimeException("Find or create an ACL using aclFor() first.");
+        }
+
+        return $this->acl->getObjectIdentity();
+    }
+
+    /**
      * @return null|MutableAclInterface
      */
     public function getAcl(): ?MutableAclInterface
@@ -343,5 +409,25 @@ class AclManager
         }
 
         return $this->acl;
+    }
+
+    /**
+     * Deletes the ACL
+     *
+     * @return $this
+     */
+    public function delete()
+    {
+        if (null === $this->acl) {
+            throw new \RuntimeException("Find or create an ACL using aclFor() first.");
+        }
+
+        $identity = $this->getObjectIdentity();
+
+        $this->aclProvider->deleteAcl($identity);
+
+        $this->acl = null;
+
+        return $this;
     }
 }
