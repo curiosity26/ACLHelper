@@ -57,3 +57,58 @@ class MyController extends FOSRestController implements ClassResourceInterface {
 }
 
 ```
+
+## ACL Manager
+
+To make it easier to build ACLs, the ACL Manager was created. It's pretty much just a chain wrapper
+that allows the ACL to be found/created and ACEs to be inserted, updated or deleted.
+
+### Example
+
+```php
+<?php
+
+namespace App\Controller;
+
+use Curiosity26\AclHelperBundle\Helper\AclHelper;
+use Curiosity26\AclHelperBundle\Tests\Entity\TestObject;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
+use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
+use Symfony\Component\Security\Acl\Permission\MaskBuilder;
+
+class MyController extends FOSRestController implements ClassResourceInterface {
+    
+    /**
+     * @var AclHelper
+     */
+    private $aclHelper;
+    
+    public function __construct(AclHelper $aclHelper)
+    {
+        $this->aclHelper = $aclHelper;
+    }
+    
+    public function postAction(TestObject $object)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($object);
+        
+        $aclManager = $this->aclHelper->createAclManager();
+        
+        // The current user needs to be the owner
+        // The ROLE_ADMIN must have view, edit, delete permissions
+        // ROLE_USER users should be able to view
+        $aclManager->aclFor($object)
+            ->insertObjectAce(UserSecurityIdentity::fromAccount($this->getUser()), MaskBuilder::MASK_OWNER)
+            ->insertObjectAce(
+                new RoleSecurityIdentity('ROLE_ADMIN'),
+                MaskBuilder::MASK_VIEW | MaskBuilder::MASK_EDIT | MaskBuilder::MASK_DELETE
+            )
+            ->insertObjectAce(new RoleSecurityIdentity('ROLE_USER'), MaskBuilder::MASK_VIEW)
+            ->save()
+        ;
+        
+        return $this->view(null, 201);
+    }
+}
+```
