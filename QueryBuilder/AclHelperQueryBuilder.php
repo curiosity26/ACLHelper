@@ -35,7 +35,7 @@ class AclHelperQueryBuilder
      */
     private $registry;
 
-    public function __construct(RegistryInterface $registry, RoleHierarchyInterface $roleHierarchy = null)
+    public function __construct(RegistryInterface $registry, ?RoleHierarchyInterface $roleHierarchy = null)
     {
         $this->registry      = $registry;
         $this->roleHierarchy = $roleHierarchy;

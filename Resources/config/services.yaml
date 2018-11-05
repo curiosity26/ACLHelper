@@ -1,7 +1,7 @@
 services:
     Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder:
         $registry: '@Symfony\Bridge\Doctrine\RegistryInterface'
-        $roleHierarchy: '@Symfony\Component\Security\Core\Role\RoleHierarchyInterface'
+        $roleHierarchy: '@?security.role_hierarchy'
     Curiosity26\AclHelperBundle\Helper\AclHelper:
         arguments:
             $registry: '@Symfony\Bridge\Doctrine\RegistryInterface'

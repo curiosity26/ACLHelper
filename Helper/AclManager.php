@@ -352,7 +352,7 @@ class AclManager
      *
      * @return array|Entry[]
      */
-    public function getClassFieldAces(\string $field): array
+    public function getClassFieldAces(string $field): array
     {
         if (null === $this->acl) {
             throw new \RuntimeException("Find or create an ACL using aclFor() first.");
@@ -378,7 +378,7 @@ class AclManager
      *
      * @return array|Entry[]
      */
-    public function getObjectFieldAces(\string $field): array
+    public function getObjectFieldAces(string $field): array
     {
         if (null === $this->acl) {
             throw new \RuntimeException("Find or create an ACL using aclFor() first.");
