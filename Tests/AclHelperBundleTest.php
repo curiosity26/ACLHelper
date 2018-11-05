@@ -8,14 +8,12 @@
 
 namespace Curiosity26\AclHelperBundle\Tests;
 
-use Curiosity26\AclHelperBundle\Entity\Entry;
-use Curiosity26\AclHelperBundle\Entity\SecurityIdentity;
 use Curiosity26\AclHelperBundle\Helper\AclHelper;
 use Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder;
 use Curiosity26\AclHelperBundle\Tests\Entity\TestObject;
-use Doctrine\DBAL\Connection;
 use Symfony\Component\Security\Acl\Dbal\Schema;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
+use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
 use Symfony\Component\Security\Acl\Permission\BasicPermissionMap;
@@ -53,11 +51,11 @@ class AclHelperBundleTest extends DatabaseTestCase
     protected function setUp()/* The :void return type declaration that should be here would cause a BC issue */
     {
         parent::setUp();
-        $this->authDecider = $this->get(AuthorizationCheckerInterface::class);
-        $this->aclProvider = $this->get('security.acl.provider');
-        $this->aclHelper = $this->get(AclHelper::class);
+        $this->authDecider  = $this->get(AuthorizationCheckerInterface::class);
+        $this->aclProvider  = $this->get('security.acl.provider');
+        $this->aclHelper    = $this->get(AclHelper::class);
         $this->queryBuilder = $this->get(AclHelperQueryBuilder::class);
-        $this->schema = $this->get('security.acl.dbal.schema');
+        $this->schema       = $this->get('security.acl.dbal.schema');
     }
 
     protected function setupAclSchemas()
@@ -73,28 +71,48 @@ class AclHelperBundleTest extends DatabaseTestCase
     protected function loadSchemas(): array
     {
         return [
-            TestObject::class
+            TestObject::class,
         ];
     }
 
     public function testView()
     {
-        $manager = $this->doctrine->getManager();
-        $agent = $this->aclHelper->createAgent(TestObject::class);
-        $permMap = new BasicPermissionMap();
+        $manager    = $this->doctrine->getManager();
+        $agent      = $this->aclHelper->createAgent(TestObject::class);
+        $permMap    = new BasicPermissionMap();
         $testObject = new TestObject();
         $testObject->setName('Wicked Cool Object');
 
         $manager->persist($testObject);
         $manager->flush();
 
-        $objectIdentity = ObjectIdentity::fromDomainObject($testObject);
-        $acl = $this->aclProvider->createAcl($objectIdentity);
+        $objectIdentity = new ObjectIdentity('class', TestObject::class);
+        $acl            = $this->aclProvider->createAcl($objectIdentity);
 
-        $owner1 = new User('owner1', 'owner1_pass');
+        $owner1         = new User('owner1', 'owner1_pass');
         $owner1Identity = UserSecurityIdentity::fromAccount($owner1);
-        $acl->insertObjectAce($owner1Identity, MaskBuilder::MASK_OWNER);
+        $acl->insertClassAce($owner1Identity, MaskBuilder::MASK_OWNER);
+
+        $moderatorIdentity = new RoleSecurityIdentity('ROLE_MODERATOR');
+        $acl->insertClassAce(
+            $moderatorIdentity,
+            MaskBuilder::MASK_VIEW | MaskBuilder::MASK_EDIT | MaskBuilder::MASK_DELETE
+        );
+
+        $userRoleIdentity = new RoleSecurityIdentity('ROLE_USER');
+        $acl->insertClassAce($userRoleIdentity, MaskBuilder::MASK_VIEW);
+
         $this->aclProvider->updateAcl($acl);
+
+        $this->aclProvider->createAcl(ObjectIdentity::fromDomainObject($testObject));
+
+        $testObject2 = new TestObject();
+        $testObject2->setName('Wicked Cool Object 2');
+
+        $manager->persist($testObject2);
+        $manager->flush();
+
+        $this->aclProvider->createAcl(ObjectIdentity::fromDomainObject($testObject2));
 
         $maskBuilder = $permMap->getMaskBuilder();
         foreach ($permMap->getMasks(BasicPermissionMap::PERMISSION_VIEW, $testObject) as $mask) {
@@ -104,9 +122,21 @@ class AclHelperBundleTest extends DatabaseTestCase
         $mask1      = $maskBuilder->get();
         $owner1Objs = $agent->findAll($mask1, $owner1);
 
-        $this->assertNotNull($owner1Objs);
+        $this->assertCount(2, $owner1Objs);
         $obj1 = $owner1Objs[0];
 
         $this->assertNotNull($obj1);
+
+        $owner2Objs = $agent->findAll($mask1, new User('view', 'view_user1', ['ROLE_USER']));
+        $this->assertCount(2, $owner2Objs);
+
+        $modObjs = $agent->findAll($mask1, $moderatorIdentity);
+        $this->assertCount(2, $modObjs);
+
+        $adminObjs = $agent->findAll($mask1, new RoleSecurityIdentity('ROLE_ADMIN'));
+        $this->assertCount(2, $adminObjs);
+
+        $supAdminObjs = $agent->findAll($mask1, new RoleSecurityIdentity('ROLE_SUPER_ADMIN'));
+        $this->assertCount(0, $supAdminObjs);
     }
 }

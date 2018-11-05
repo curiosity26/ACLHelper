@@ -12,7 +12,11 @@ use Curiosity26\ACLHelperBundle\QueryBuilder\AclHelperQueryBuilder;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\Query\Expr\OrderBy;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Security\Acl\Domain\PermissionGrantingStrategy;
 use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
@@ -21,6 +25,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AclHelperAgent
 {
+    use LoggerAwareTrait;
+
     /**
      * @var string
      */
@@ -44,12 +50,15 @@ class AclHelperAgent
     public function __construct(
         string $class,
         EntityManagerInterface $entityManager,
-        AclHelperQueryBuilder $queryBuilder
+        AclHelperQueryBuilder $queryBuilder,
+        ?LoggerInterface $logger = null
     ) {
         $this->class         = $class;
         $this->entityManager = $entityManager;
         $this->queryBuilder  = $queryBuilder;
         $this->classMetadata = $this->entityManager->getClassMetadata($this->class);
+
+        $this->setLogger($logger ?: new NullLogger());
     }
 
     /**
@@ -62,7 +71,6 @@ class AclHelperAgent
      * @param string $strategy
      *
      * @return mixed
-     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public function findBy(
         int $mask,
@@ -110,25 +118,34 @@ class AclHelperAgent
             $builder->setFirstResult($offset);
         }
 
-        $identities = [$identity];
+        $identities = is_array($identity) ? $identity : [$identity];
 
-        if ($identity instanceof UserInterface) {
-            foreach ($identity->getRoles() as $role) {
-                $identities[] = $role;
+        foreach ($identities as $id) {
+            if ($id instanceof UserInterface) {
+                foreach ($id->getRoles() as $role) {
+                    $identities[] = $role instanceof Role ? $role->getRole() : $role;
+                }
             }
         }
 
-        $this->queryBuilder->createAclQueryBuilder(
-            $builder,
-            $this->classMetadata,
-            $identities,
-            $mask,
-            $strategy
-        );
+        try {
+            $this->queryBuilder->createAclQueryBuilder(
+                $builder,
+                $this->classMetadata,
+                $identities,
+                $mask,
+                $strategy
+            );
 
-        $query = $builder->getQuery();
+            $query = $builder->getQuery();
 
-        return $query->getResult();
+            return $query->getResult();
+        } catch (MappingException $e) {
+            $this->logger->error($e->getMessage());
+            $this->logger->debug($e->getTraceAsString());
+        }
+
+        return [];
     }
 
     /**
@@ -138,7 +155,6 @@ class AclHelperAgent
      * @param string $strategy
      *
      * @return mixed|null
-     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public function findOneBy(
         int $mask,
@@ -161,7 +177,6 @@ class AclHelperAgent
      * @param string $strategy
      *
      * @return mixed
-     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public function findAll(int $mask, $identity, string $strategy = PermissionGrantingStrategy::ANY)
     {

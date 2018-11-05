@@ -132,14 +132,23 @@ class AclHelperQueryBuilder
             if ($id instanceof UserSecurityIdentity) {
                 $ret[] = "{$id->getClass()}-{$id->getUsername()}";
             } elseif ($id instanceof RoleSecurityIdentity) {
-                $ret = array_merge($ret, $this->getRoles([$id->getRole()]));
+                $roles = [];
+
+                foreach ($this->getRoles([$id->getRole()]) as $role) {
+                    $roles[] = $role->getRole();
+                }
+
+                $ret = array_merge($ret, $roles);
             } elseif ($id instanceof UserInterface) {
                 $ret[] = get_class($id)."-{$id->getUsername()}";
             } elseif ($id instanceof Role) {
-                $ret = array_merge($ret, $this->getRoles([$id]));
-            } elseif (is_string($id) && preg_match('/^ROLE_', $id) !== false) {
-                $id  = new Role($id);
-                $ret = array_merge($ret, $this->getRoles([$id]));
+                foreach ($this->getRoles($id) as $role) {
+                    $ret = array_merge($ret, $this->buildIdentities([new RoleSecurityIdentity($role)]));
+                }
+            } elseif (is_string($id) && preg_match('/^ROLE_/', $id) != false) {
+                foreach ($this->getRoles([new Role($id)]) as $role) {
+                    $ret = array_merge($ret, $this->buildIdentities([new RoleSecurityIdentity($role)]));
+                }
             } elseif (is_string($id)) {
                 $ret[] = $id;
             }
@@ -148,12 +157,22 @@ class AclHelperQueryBuilder
         return $ret;
     }
 
-    protected function getRoles($roles)
+    protected function getRoles(array $roles)
     {
-        if ($this->roleHierarchy instanceof RoleHierarchyInterface) {
-            return $this->roleHierarchy->getReachableRoles((array)$roles);
+        $roleLookup = [];
+
+        foreach ($roles as $role) {
+            if (is_string($role)) {
+                $roleLookup[] = new Role($role);
+            } else {
+                $roleLookup[] = $role;
+            }
         }
 
-        return (array)$roles;
+        if ($this->roleHierarchy instanceof RoleHierarchyInterface) {
+            return $this->roleHierarchy->getReachableRoles($roleLookup);
+        }
+
+        return $roleLookup;
     }
 }
