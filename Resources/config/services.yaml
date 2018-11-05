@@ -6,4 +6,5 @@ services:
         arguments:
             $registry: '@Symfony\Bridge\Doctrine\RegistryInterface'
             $queryBuilder: '@Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder'
+            $provider: '@security.acl.provider'
         public: true

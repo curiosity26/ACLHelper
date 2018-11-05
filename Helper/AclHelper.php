@@ -10,6 +10,7 @@ namespace Curiosity26\AclHelperBundle\Helper;
 
 use Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
 
 class AclHelper
 {
@@ -23,10 +24,19 @@ class AclHelper
      */
     private $registry;
 
-    public function __construct(RegistryInterface $registry, AclHelperQueryBuilder $queryBuilder)
-    {
-        $this->registry     = $registry;
+    /**
+     * @var MutableAclProviderInterface
+     */
+    private $aclProvider;
+
+    public function __construct(
+        RegistryInterface $registry,
+        AclHelperQueryBuilder $queryBuilder,
+        MutableAclProviderInterface $provider
+    ) {
+        $this->registry = $registry;
         $this->queryBuilder = $queryBuilder;
+        $this->aclProvider = $provider;
     }
 
     /**
@@ -39,5 +49,13 @@ class AclHelper
         $manager = $this->registry->getManagerForClass($className);
 
         return new AclHelperAgent($className, $manager, $this->queryBuilder);
+    }
+
+    /**
+     * @return AclManager
+     */
+    public function createAclManager()
+    {
+        return new AclManager($this->aclProvider);
     }
 }

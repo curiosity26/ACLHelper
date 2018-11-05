@@ -79,6 +79,7 @@ class AclHelperBundleTest extends DatabaseTestCase
     {
         $manager    = $this->doctrine->getManager();
         $agent      = $this->aclHelper->createAgent(TestObject::class);
+        $aclManager = $this->aclHelper->createAclManager();
         $permMap    = new BasicPermissionMap();
         $testObject = new TestObject();
         $testObject->setName('Wicked Cool Object');
@@ -87,24 +88,24 @@ class AclHelperBundleTest extends DatabaseTestCase
         $manager->flush();
 
         $objectIdentity = new ObjectIdentity('class', TestObject::class);
-        $acl            = $this->aclProvider->createAcl($objectIdentity);
+        $aclManager->aclFor($objectIdentity);
 
         $owner1         = new User('owner1', 'owner1_pass');
         $owner1Identity = UserSecurityIdentity::fromAccount($owner1);
-        $acl->insertClassAce($owner1Identity, MaskBuilder::MASK_OWNER);
+        $aclManager->insertClassAce($owner1Identity, MaskBuilder::MASK_OWNER);
 
         $moderatorIdentity = new RoleSecurityIdentity('ROLE_MODERATOR');
-        $acl->insertClassAce(
+        $aclManager->insertClassAce(
             $moderatorIdentity,
             MaskBuilder::MASK_VIEW | MaskBuilder::MASK_EDIT | MaskBuilder::MASK_DELETE
         );
 
         $userRoleIdentity = new RoleSecurityIdentity('ROLE_USER');
-        $acl->insertClassAce($userRoleIdentity, MaskBuilder::MASK_VIEW);
+        $aclManager->insertClassAce($userRoleIdentity, MaskBuilder::MASK_VIEW);
 
-        $this->aclProvider->updateAcl($acl);
+        $aclManager->save();
 
-        $this->aclProvider->createAcl(ObjectIdentity::fromDomainObject($testObject));
+        $aclManager->aclFor($testObject);
 
         $testObject2 = new TestObject();
         $testObject2->setName('Wicked Cool Object 2');
@@ -112,7 +113,7 @@ class AclHelperBundleTest extends DatabaseTestCase
         $manager->persist($testObject2);
         $manager->flush();
 
-        $this->aclProvider->createAcl(ObjectIdentity::fromDomainObject($testObject2));
+        $aclManager->aclFor($testObject2);
 
         $maskBuilder = $permMap->getMaskBuilder();
         foreach ($permMap->getMasks(BasicPermissionMap::PERMISSION_VIEW, $testObject) as $mask) {
