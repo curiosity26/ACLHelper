@@ -38,7 +38,7 @@ class MyController extends FOSRestController implements ClassResourceInterface {
     
     /**
      * @Rest\View()
-     * @return array
+     * @return TestObject[]
      */
     public function cgetAction()
     {
