@@ -24,7 +24,7 @@ use Curiosity26\AclHelperBundle\Helper\AclHelper;
 use Curiosity26\AclHelperBundle\Tests\Entity\TestObject;
 use Symfony\Component\Security\Acl\Permission\BasicPermissionMap;
 
-class MyController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller {
+class MyController extends FOSRestController implements ClassResourceInterface {
     
     /**
      * @var AclHelper
@@ -40,7 +40,7 @@ class MyController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
      * @Rest\View()
      * @return array
      */
-    public function index()
+    public function cgetAction()
     {
         // Get all of the TestObjects this user can view
         $agent   = $this->aclHelper->createAgent(TestObject::class);
