@@ -104,7 +104,7 @@ class AclHelperQueryBuilder
         }
 
         $q
-            ->select('acl_o.objectIdentifier')
+            ->select('INT(acl_o.objectIdentifier)')
             ->distinct()
             ->from(ObjectIdentity::class, 'acl_o')
             ->innerJoin(AclClass::class, 'acl_c', Join::WITH, 'acl_c.id = acl_o.classId')
