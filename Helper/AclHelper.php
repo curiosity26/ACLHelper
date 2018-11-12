@@ -58,4 +58,12 @@ class AclHelper
     {
         return new AclManager($this->aclProvider);
     }
+
+    /**
+     * @return MutableAclProviderInterface
+     */
+    public function getAclProvider(): MutableAclProviderInterface
+    {
+        return $this->aclProvider;
+    }
 }
