@@ -12,6 +12,8 @@ use Curiosity26\AclHelperBundle\Entity\AclClass;
 use Curiosity26\AclHelperBundle\Entity\Entry;
 use Curiosity26\AclHelperBundle\Entity\ObjectIdentity;
 use Curiosity26\AclHelperBundle\Entity\SecurityIdentity;
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -77,6 +79,7 @@ class AclHelperQueryBuilder
      * @param string $strategy
      *
      * @return QueryBuilder
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function buildAclQuery($strategy = PermissionGrantingStrategy::ANY)
     {
@@ -99,8 +102,15 @@ class AclHelperQueryBuilder
                 $expr->add($q->expr()->neq('BIT_AND(acl_e.mask, :mask)', 0));
         }
 
+        $platform = $manager->getConnection()->getDatabasePlatform();
+
+        if ($platform instanceof PostgreSqlPlatform) {
+            $q->select('CAST(acl_o.objectIdentifier as int)');
+        } else {
+            $q->select('acl_o.objectIdentifier');
+        }
+
         $q
-            ->select('acl_o.objectIdentifier')
             ->distinct()
             ->from(ObjectIdentity::class, 'acl_o')
             ->innerJoin(AclClass::class, 'acl_c', Join::WITH, 'acl_c.id = acl_o.classId')
