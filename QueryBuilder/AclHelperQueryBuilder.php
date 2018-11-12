@@ -89,6 +89,7 @@ class AclHelperQueryBuilder
         $expr = $q->expr()
                   ->andX($q->expr()->eq('acl_c.classType', ':class_type'))
                   ->add($q->expr()->in('acl_s.identifier', ':identities'))
+                  ->add($q->expr()->neq('acl_o.objectIdentifier', "'class'"))
             ;
 
         switch ($strategy) {
@@ -102,15 +103,8 @@ class AclHelperQueryBuilder
                 $expr->add($q->expr()->neq('BIT_AND(acl_e.mask, :mask)', 0));
         }
 
-        $platform = $manager->getConnection()->getDatabasePlatform();
-
-        if ($platform instanceof PostgreSqlPlatform) {
-            $q->select('CAST(acl_o.objectIdentifier as int)');
-        } else {
-            $q->select('acl_o.objectIdentifier');
-        }
-
         $q
+            ->select('acl_o.objectIdentifier')
             ->distinct()
             ->from(ObjectIdentity::class, 'acl_o')
             ->innerJoin(AclClass::class, 'acl_c', Join::WITH, 'acl_c.id = acl_o.classId')
