@@ -88,11 +88,13 @@ class AclHelperAgent
         ;
 
         if (!empty($criteria)) {
-            $predicates = [];
+            $predicates = $builder->expr()->andX();
             foreach ($criteria as $field => $criterion) {
-                $predicates[] = is_array($criterion)
+                $predicates->add(
+                    is_array($criterion)
                     ? $builder->expr()->in("e,$field", ":$field")
-                    : $builder->expr()->eq("e.$field", ":$field");
+                    : $builder->expr()->eq("e.$field", ":$field")
+                );
                 $builder->setParameter(":$field", $criterion);
             }
 
