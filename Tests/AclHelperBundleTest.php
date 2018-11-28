@@ -8,11 +8,13 @@
 
 namespace Curiosity26\AclHelperBundle\Tests;
 
+use Curiosity26\AclHelperBundle\Entity\AclClass;
+use Curiosity26\AclHelperBundle\Entity\Entry;
+use Curiosity26\AclHelperBundle\Entity\ObjectIdentity;
+use Curiosity26\AclHelperBundle\Entity\SecurityIdentity;
 use Curiosity26\AclHelperBundle\Helper\AclHelper;
 use Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder;
 use Curiosity26\AclHelperBundle\Tests\Entity\TestObject;
-use Symfony\Component\Security\Acl\Dbal\Schema;
-use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
@@ -20,6 +22,7 @@ use Symfony\Component\Security\Acl\Permission\BasicPermissionMap;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\Security\Acl\Domain\ObjectIdentity as AclObjectIdentity;
 
 class AclHelperBundleTest extends DatabaseTestCase
 {
@@ -43,11 +46,6 @@ class AclHelperBundleTest extends DatabaseTestCase
      */
     private $queryBuilder;
 
-    /**
-     * @var Schema
-     */
-    private $schema;
-
     protected function setUp()/* The :void return type declaration that should be here would cause a BC issue */
     {
         parent::setUp();
@@ -55,22 +53,15 @@ class AclHelperBundleTest extends DatabaseTestCase
         $this->aclProvider  = $this->get('security.acl.provider');
         $this->aclHelper    = $this->get(AclHelper::class);
         $this->queryBuilder = $this->get(AclHelperQueryBuilder::class);
-        $this->schema       = $this->get('security.acl.dbal.schema');
-    }
-
-    protected function setupAclSchemas()
-    {
-        $connection = $this->doctrine->getConnection();
-        $this->schema->addToSchema($connection->getSchemaManager()->createSchema());
-
-        foreach ($this->schema->toSql($connection->getDatabasePlatform()) as $sql) {
-            $connection->exec($sql);
-        }
     }
 
     protected function loadSchemas(): array
     {
         return [
+            AclClass::class,
+            Entry::class,
+            ObjectIdentity::class,
+            SecurityIdentity::class,
             TestObject::class,
         ];
     }
@@ -87,7 +78,7 @@ class AclHelperBundleTest extends DatabaseTestCase
         $manager->persist($testObject);
         $manager->flush();
 
-        $objectIdentity = new ObjectIdentity('class', TestObject::class);
+        $objectIdentity = new AclObjectIdentity('class', TestObject::class);
         $aclManager->aclFor($objectIdentity);
 
         $owner1         = new User('owner1', 'owner1_pass');

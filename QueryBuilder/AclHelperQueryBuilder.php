@@ -107,18 +107,18 @@ class AclHelperQueryBuilder
             ->select('INT(acl_o.objectIdentifier)')
             ->distinct()
             ->from(ObjectIdentity::class, 'acl_o')
-            ->innerJoin(AclClass::class, 'acl_c', Join::WITH, 'acl_c.id = acl_o.classId')
+            ->innerJoin(AclClass::class, 'acl_c', Join::WITH, 'acl_c.id = acl_o.class')
             ->leftJoin(
                 Entry::class,
                 'acl_e',
                 Join::WITH,
-                'acl_e.objectIdentityId = acl_o.id OR acl_e.objectIdentityId IS NULL'
+                'acl_e.objectIdentity = acl_o.id OR acl_e.objectIdentity IS NULL'
             )
             ->leftJoin(
                 SecurityIdentity::class,
                 'acl_s',
                 Join::WITH,
-                'acl_e.securityIdentityId = acl_s.id'
+                'acl_e.securityIdentity = acl_s.id'
             )
             ->where(
                 $expr

@@ -8,3 +8,8 @@ services:
             $queryBuilder: '@Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder'
             $provider: '@security.acl.provider'
         public: true
+    security.acl.dbal.schema_listener:
+        class: 'Curiosity26\AclHelperBundle\EventListener\AclSchemaListener'
+        arguments: ['@security.acl.dbal.schema']
+        tags:
+            - {name: 'doctrine.event_listener', connection: 'default', event: 'postGenerateSchema', lazy: true}

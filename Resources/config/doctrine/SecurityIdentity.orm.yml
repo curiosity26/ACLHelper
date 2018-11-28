@@ -1,7 +1,7 @@
 Curiosity26\AclHelperBundle\Entity\SecurityIdentity:
     table: "acl_security_identities"
     type: entity
-    read_only: true
+    readOnly: true
     id:
         id:
             type: integer

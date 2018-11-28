@@ -11,9 +11,9 @@ namespace Curiosity26\AclHelperBundle\Entity;
 class Entry
 {
     private $id;
-    private $classId;
-    private $objectIdentityId;
-    private $securityIdentityId;
+    private $class;
+    private $objectIdentity;
+    private $securityIdentity;
     private $fieldName;
     private $aceOrder;
     private $mask;
@@ -41,49 +41,49 @@ class Entry
     /**
      * @return mixed
      */
-    public function getClassId()
+    public function getClass()
     {
-        return $this->classId;
+        return $this->class;
     }
 
     /**
-     * @param mixed $classId
+     * @param mixed $class
      */
-    public function setClassId($classId)
+    public function setClass(AclClass $class)
     {
-        $this->classId = $classId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getObjectIdentityId()
-    {
-        return $this->objectIdentityId;
-    }
-
-    /**
-     * @param mixed $object_entity_id
-     */
-    public function setObjectIdentityId($objectIdentityId)
-    {
-        $this->objectIdentityId = $objectIdentityId;
+        $this->class = $class;
     }
 
     /**
      * @return mixed
      */
-    public function getSecurityIdentityId()
+    public function getObjectIdentity()
     {
-        return $this->securityIdentityId;
+        return $this->objectIdentity;
     }
 
     /**
-     * @param mixed $securityIdentityId
+     * @param ObjectIdentity $object_entity_id
      */
-    public function setSecurityIdentityId($securityIdentityId)
+    public function setObjectIdentity(ObjectIdentity $objectIdentity)
     {
-        $this->securityIdentityId = $securityIdentityId;
+        $this->objectIdentity = $objectIdentity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecurityIdentity()
+    {
+        return $this->securityIdentity;
+    }
+
+    /**
+     * @param mixed $securityIdentity
+     */
+    public function setSecurityIdentity(SecurityIdentity $securityIdentity)
+    {
+        $this->securityIdentity = $securityIdentity;
     }
 
     /**
