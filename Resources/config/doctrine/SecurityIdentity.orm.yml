@@ -11,4 +11,4 @@ Curiosity26\AclHelperBundle\Entity\SecurityIdentity:
             type: string
             length: 200
         username:
-            type: integer
+            type: boolean
