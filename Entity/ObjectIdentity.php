@@ -12,7 +12,6 @@ class ObjectIdentity
 {
     private $id;
     private $parentObjectIdentity;
-    private $parent;
     private $ancestor;
     private $class;
     private $objectIdentifier;
@@ -96,26 +95,6 @@ class ObjectIdentity
     public function setEntriesInheriting($entriesInheriting)
     {
         $this->entriesInheriting = $entriesInheriting;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param mixed $parent
-     *
-     * @return ObjectIdentity
-     */
-    public function setParent(ObjectIdentity $parent)
-    {
-        $this->parent = $parent;
-
-        return $this;
     }
 
     /**
