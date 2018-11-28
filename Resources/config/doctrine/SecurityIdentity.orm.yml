@@ -12,3 +12,6 @@ Curiosity26\AclHelperBundle\Entity\SecurityIdentity:
             length: 200
         username:
             type: boolean
+    uniqueConstraints:
+        identifier_username_idx:
+            columns: [identifier, username]

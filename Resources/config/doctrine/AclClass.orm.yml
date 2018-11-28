@@ -11,3 +11,4 @@ Curiosity26\AclHelperBundle\Entity\AclClass:
             name: class_type
             type: string
             length: 200
+            unique: true

@@ -33,4 +33,6 @@ Curiosity26\AclHelperBundle\Entity\ObjectIdentity:
                 inverseJoinColumns:
                     ancestor_id:
                         referencedColumnName: id
-
+    uniqueConstraints:
+        class_identifier_idx:
+            columns: [class_id, object_identifier]
