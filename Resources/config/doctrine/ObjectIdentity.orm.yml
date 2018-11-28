@@ -7,21 +7,27 @@ Curiosity26\AclHelperBundle\Entity\ObjectIdentity:
             type: integer
             generator: { strategy: AUTO }
     fields:
-        parentObjectIdentity:
-            column: parent_object_identity_id
-            type: integer
-            nullable: true
-            options:
-                unsigned: true
         objectIdentifier:
             type: string
             length: 100
+            nullable: false
         entriesInheriting:
             type: boolean
     manyToOne:
         class:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\AclClass'
             cascade: ["persist"]
+            joinColumns:
+                class_id:
+                    nullable: false
+                    options:
+                        unsigned: true
+        parentObjectIdentity:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
+            joinColumns:
+                parent_object_identity_id:
+                    options:
+                        unsigned: true
     manyToMany:
         ancestor:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'

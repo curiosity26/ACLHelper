@@ -35,12 +35,27 @@ Curiosity26\AclHelperBundle\Entity\Entry:
         class:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\AclClass'
             cascade: ["persist"]
+            joinColumns:
+                class_id:
+                    nullable: false
+                    options:
+                        unsigned: true
+            nullable: false
         objectIdentity:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
             casade: ['persist']
+            joinColumns:
+                object_identity_id:
+                    options:
+                        unsigned: true
         securityIdentity:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\SecurityIdentity'
             cascade: ["persist"]
+            joinColumns:
+                security_identity_id:
+                    nullable: false
+                    options:
+                        unsigned: true
     uniqueConstraints:
         entry_idx:
             columns: [class_id, object_identity_id, field_name, ace_order]
