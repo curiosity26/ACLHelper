@@ -11,8 +11,10 @@ namespace Curiosity26\AclHelperBundle\Entity;
 class ObjectIdentity
 {
     private $id;
-    private $parentObjectIdentityId;
-    private $classId;
+    private $parentObjectIdentity;
+    private $parent;
+    private $ancestor;
+    private $class;
     private $objectIdentifier;
     private $entriesInheriting;
 
@@ -35,33 +37,33 @@ class ObjectIdentity
     /**
      * @return mixed
      */
-    public function getParentObjectIdentityId()
+    public function getParentObjectIdentity()
     {
-        return $this->parentObjectIdentityId;
+        return $this->parentObjectIdentity;
     }
 
     /**
-     * @param mixed $parentObjectIdentityId
+     * @param mixed $parentObjectIdentity
      */
-    public function setParentObjectIdentityId($parentObjectIdentityId)
+    public function setParentObjectIdentity($parentObjectIdentity)
     {
-        $this->parentObjectIdentityId = $parentObjectIdentityId;
+        $this->parentObjectIdentity = $parentObjectIdentity;
     }
 
     /**
      * @return mixed
      */
-    public function getClassId()
+    public function getClass()
     {
-        return $this->classId;
+        return $this->class;
     }
 
     /**
-     * @param mixed $classId
+     * @param mixed $class
      */
-    public function setClassId($classId)
+    public function setClass($class)
     {
-        $this->classId = $classId;
+        $this->class = $class;
     }
 
     /**
@@ -94,5 +96,45 @@ class ObjectIdentity
     public function setEntriesInheriting($entriesInheriting)
     {
         $this->entriesInheriting = $entriesInheriting;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param mixed $parent
+     *
+     * @return ObjectIdentity
+     */
+    public function setParent(ObjectIdentity $parent)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAncestor()
+    {
+        return $this->ancestor;
+    }
+
+    /**
+     * @param mixed $ancestor
+     *
+     * @return ObjectIdentity
+     */
+    public function setAncestor(ObjectIdentity $ancestor)
+    {
+        $this->ancestor = $ancestor;
+
+        return $this;
     }
 }

@@ -1,34 +1,19 @@
 Curiosity26\AclHelperBundle\Entity\Entry:
     table: "acl_entries"
     type: entity
-    read-only: true
+    readOnly: true
     id:
         id:
             type: integer
             generator: { strategy: AUTO }
     fields:
-        classId:
-            name: class_id
-            type: integer
-            options:
-                unsigned: true
-        objectIdentityId:
-            name: object_identity_id
-            type: integer
-            options:
-                unsigned: true
-        securityIdentityId:
-            name: security_identity_id
-            type: integer
-            options:
-                unsigned: true
         fieldName:
-            name: field_name
             type: string
             length: 50
+            nullable: true
         aceOrder:
-            name: ace_order
             type: smallint
+            default: 0
             options:
                 unsigned: true
         mask:
@@ -39,9 +24,20 @@ Curiosity26\AclHelperBundle\Entity\Entry:
             name: granting_strategy
             type: string
             length: 30
+            default: 'all'
         auditSuccess:
             name: audit_success
             type: boolean
         auditFailure:
             name: audit_failure
             type: boolean
+    manyToOne:
+        class:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\AclClass'
+            cascade: ["persist"]
+        objectIdentity:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
+            casade: ['persist']
+        securityIdentity:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\SecurityIdentity'
+            cascade: ["persist"]

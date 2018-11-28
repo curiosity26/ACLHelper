@@ -1,26 +1,40 @@
 Curiosity26\AclHelperBundle\Entity\ObjectIdentity:
     table: "acl_object_identities"
     type: entity
-    read-only: true
+    readOnly: true
     id:
         id:
             type: integer
             generator: { strategy: AUTO }
     fields:
-        parentObjectIdentityId:
-            name: parent_object_identity_id
+        parentObjectIdentity:
+            column: parent_object_identity_id
             type: integer
-            options:
-                unsigned: true
-        classId:
-            name: class_id
-            type: integer
+            nullable: true
             options:
                 unsigned: true
         objectIdentifier:
-            name: object_identifier
             type: string
             length: 100
         entriesInheriting:
-            name: entries_inheriting
             type: boolean
+    manyToOne:
+        class:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\AclClass'
+            cascade: ["persist"]
+    manyToMany:
+        parent:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
+            mappedBy: ancestor
+        ancestor:
+            targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
+            inversedBy: parentObjectIdentity
+            joinTable:
+                name: acl_object_identity_ancestors
+                inversedJoinColumns:
+                    object_identity_id:
+                        referencedColumnName: id
+                joinColumns:
+                    ancestor_id:
+                        referencedColumnName: id
+

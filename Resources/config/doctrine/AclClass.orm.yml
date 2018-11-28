@@ -1,7 +1,7 @@
 Curiosity26\AclHelperBundle\Entity\AclClass:
     table: "acl_classes"
     type: entity
-    read-only: true
+    readOnly: true
     id:
         id:
             type: integer
