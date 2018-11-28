@@ -10,6 +10,7 @@ Curiosity26\AclHelperBundle\Entity\SecurityIdentity:
         identifier:
             type: string
             length: 200
+            nullable: false
         username:
             type: boolean
     uniqueConstraints:

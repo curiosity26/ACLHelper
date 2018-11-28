@@ -12,3 +12,4 @@ Curiosity26\AclHelperBundle\Entity\AclClass:
             type: string
             length: 200
             unique: true
+            nullable: false
