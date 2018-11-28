@@ -59,3 +59,6 @@ Curiosity26\AclHelperBundle\Entity\Entry:
     uniqueConstraints:
         entry_idx:
             columns: [class_id, object_identity_id, field_name, ace_order]
+    indexes:
+        entry_indexes:
+            columns: [class_id, object_identity_id, security_identity_id]
