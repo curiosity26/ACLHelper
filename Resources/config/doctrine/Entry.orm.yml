@@ -41,3 +41,6 @@ Curiosity26\AclHelperBundle\Entity\Entry:
         securityIdentity:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\SecurityIdentity'
             cascade: ["persist"]
+    uniqueConstraints:
+        entry_idx:
+            columns: [class_id, object_identity_id, field_name, ace_order]

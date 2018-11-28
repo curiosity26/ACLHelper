@@ -23,18 +23,16 @@ Curiosity26\AclHelperBundle\Entity\ObjectIdentity:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\AclClass'
             cascade: ["persist"]
     manyToMany:
-        parent:
-            targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
-            mappedBy: ancestor
         ancestor:
             targetEntity: 'Curiosity26\AclHelperBundle\Entity\ObjectIdentity'
-            inversedBy: parentObjectIdentity
             joinTable:
                 name: acl_object_identity_ancestors
-                inversedJoinColumns:
+                joinColumns:
                     object_identity_id:
                         referencedColumnName: id
-                joinColumns:
+                inverseJoinColumns:
                     ancestor_id:
                         referencedColumnName: id
-
+    uniqueConstraints:
+        class_identifier_idx:
+            columns: [class_id, object_identifier]
