@@ -9,11 +9,15 @@
 namespace Curiosity26\AclHelperBundle\Helper;
 
 use Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
 
-class AclHelper
+class AclHelper implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var AclHelperQueryBuilder
      */
@@ -29,14 +33,21 @@ class AclHelper
      */
     private $aclProvider;
 
+    /**
+     * @var bool
+     */
+    private $allowClassAclsDefault = true;
+
     public function __construct(
         RegistryInterface $registry,
         AclHelperQueryBuilder $queryBuilder,
-        MutableAclProviderInterface $provider
+        MutableAclProviderInterface $provider,
+        bool $allowClassAclsDefault = true
     ) {
-        $this->registry = $registry;
-        $this->queryBuilder = $queryBuilder;
-        $this->aclProvider = $provider;
+        $this->registry              = $registry;
+        $this->queryBuilder          = $queryBuilder;
+        $this->aclProvider           = $provider;
+        $this->allowClassAclsDefault = $allowClassAclsDefault;
     }
 
     /**
@@ -48,7 +59,13 @@ class AclHelper
     {
         $manager = $this->registry->getManagerForClass($className);
 
-        return new AclHelperAgent($className, $manager, $this->queryBuilder);
+        return new AclHelperAgent(
+            $className,
+            $manager,
+            $this->queryBuilder,
+            $this->allowClassAclsDefault,
+            $this->logger
+        );
     }
 
     /**

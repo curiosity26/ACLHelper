@@ -15,22 +15,17 @@ use Curiosity26\AclHelperBundle\Entity\SecurityIdentity;
 use Curiosity26\AclHelperBundle\Helper\AclHelper;
 use Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder;
 use Curiosity26\AclHelperBundle\Tests\Entity\TestObject;
+use Symfony\Component\Security\Acl\Domain\PermissionGrantingStrategy;
 use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
 use Symfony\Component\Security\Acl\Permission\BasicPermissionMap;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity as AclObjectIdentity;
 
 class AclHelperBundleTest extends DatabaseTestCase
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authDecider;
-
     /**
      * @var MutableAclProviderInterface
      */
@@ -49,7 +44,6 @@ class AclHelperBundleTest extends DatabaseTestCase
     protected function setUp()/* The :void return type declaration that should be here would cause a BC issue */
     {
         parent::setUp();
-        $this->authDecider  = $this->get(AuthorizationCheckerInterface::class);
         $this->aclProvider  = $this->get('security.acl.provider');
         $this->aclHelper    = $this->get(AclHelper::class);
         $this->queryBuilder = $this->get(AclHelperQueryBuilder::class);
@@ -72,11 +66,6 @@ class AclHelperBundleTest extends DatabaseTestCase
         $agent      = $this->aclHelper->createAgent(TestObject::class);
         $aclManager = $this->aclHelper->createAclManager();
         $permMap    = new BasicPermissionMap();
-        $testObject = new TestObject();
-        $testObject->setName('Wicked Cool Object');
-
-        $manager->persist($testObject);
-        $manager->flush();
 
         $objectIdentity = new AclObjectIdentity('class', TestObject::class);
         $aclManager->aclFor($objectIdentity);
@@ -96,7 +85,15 @@ class AclHelperBundleTest extends DatabaseTestCase
 
         $aclManager->save();
 
-        $aclManager->aclFor($testObject);
+        $testObject = new TestObject();
+        $testObject->setName('Wicked Cool Object');
+
+        $childObject = new TestObject();
+        $childObject->setName('Child');
+        $testObject->addChild($childObject);
+
+        $manager->persist($testObject);
+        $manager->flush();
 
         $testObject2 = new TestObject();
         $testObject2->setName('Wicked Cool Object 2');
@@ -114,21 +111,34 @@ class AclHelperBundleTest extends DatabaseTestCase
         $mask1      = $maskBuilder->get();
         $owner1Objs = $agent->findAll($mask1, $owner1);
 
-        $this->assertCount(2, $owner1Objs);
+        $this->assertCount(3, $owner1Objs);
         $obj1 = $owner1Objs[0];
 
         $this->assertNotNull($obj1);
 
-        $owner2Objs = $agent->findAll($mask1, new User('view', 'view_user1', ['ROLE_USER']));
-        $this->assertCount(2, $owner2Objs);
+        $viewUser   = new User('view', 'view_user1', ['ROLE_USER']);
+        $owner2Objs = $agent->findAll($mask1, $viewUser);
+        $this->assertCount(3, $owner2Objs);
+        $owner2Objs = $agent->findAll($mask1, $viewUser, PermissionGrantingStrategy::ANY, false);
+        $this->assertCount(1, $owner2Objs);
+        $owner2Objs = $agent->findBy($mask1, $viewUser, ['name' => 'Wicked Cool Object']);
+        $this->assertCount(1, $owner2Objs);
 
         $modObjs = $agent->findAll($mask1, $moderatorIdentity);
+        $this->assertCount(3, $modObjs);
+        $modObjs = $agent->findBy($mask1, $moderatorIdentity, ['name' => ['LIKE' => 'Wicked %']]);
         $this->assertCount(2, $modObjs);
 
-        $adminObjs = $agent->findAll($mask1, new RoleSecurityIdentity('ROLE_ADMIN'));
-        $this->assertCount(2, $adminObjs);
+        $roleAdmin = new RoleSecurityIdentity('ROLE_ADMIN');
+        $adminObjs = $agent->findAll($mask1, $roleAdmin);
+        $this->assertCount(3, $adminObjs);
+        $adminObjs = $agent->findBy($mask1, $roleAdmin, ['children.name' => 'Child']);
+        $this->assertCount(1, $adminObjs);
+        $adminObjs = $agent->findBy($mask1, $roleAdmin, ['parent.name' => ['LIKE' => 'Wicked %']]);
+        $this->assertCount(1, $adminObjs);
 
-        $supAdminObjs = $agent->findAll($mask1, new RoleSecurityIdentity('ROLE_SUPER_ADMIN'));
+        $roleSuperAdmin = new RoleSecurityIdentity('ROLE_SUPER_ADMIN');
+        $supAdminObjs   = $agent->findAll($mask1, $roleSuperAdmin);
         $this->assertCount(0, $supAdminObjs);
     }
 }

@@ -7,6 +7,8 @@ services:
             $registry: '@Symfony\Bridge\Doctrine\RegistryInterface'
             $queryBuilder: '@Curiosity26\AclHelperBundle\QueryBuilder\AclHelperQueryBuilder'
             $provider: '@security.acl.provider'
+        calls:
+             - ['setLogger', ['@?Psr\Log\LoggerInterface']]
         public: true
     security.acl.dbal.schema_listener:
         class: 'Curiosity26\AclHelperBundle\EventListener\AclSchemaListener'
