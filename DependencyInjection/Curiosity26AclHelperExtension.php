@@ -8,7 +8,9 @@
 
 namespace Curiosity26\AclHelperBundle\DependencyInjection;
 
+use Curiosity26\AclHelperBundle\DependencyInjection\Configuration\Configuration;
 use Curiosity26\AclHelperBundle\Doctrine\DQL\CastAsInt;
+use Curiosity26\AclHelperBundle\Helper\AclHelper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -27,6 +29,13 @@ class Curiosity26AclHelperExtension extends Extension implements PrependExtensio
     {
         $loader = new YamlFileLoader($container, new FileLocator([__DIR__.'/../Resources/config/']));
         $loader->load('services.yaml');
+
+        $config = $this->processConfiguration(new Configuration(), $configs);
+
+        if ($container->hasDefinition(AclHelper::class)) {
+            $def = $container->getDefinition(AclHelper::class);
+            $def->setArgument('$allowClassAclsDefault', $config['allowClassAclsDefault']);
+        }
     }
 
     public function prepend(ContainerBuilder $container)

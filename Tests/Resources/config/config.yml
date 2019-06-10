@@ -39,3 +39,6 @@ fidry_alice_data_fixtures:
     default_purge_mode: truncate
     db_drivers:
         doctrine_orm: true
+
+curiosity26_acl_helper:
+    allowClassAclsDefault: true
